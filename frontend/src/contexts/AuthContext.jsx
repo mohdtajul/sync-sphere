@@ -15,12 +15,12 @@ const client = axios.create({
 export const AuthProvider = ({ children }) => {
 
     const authContext = useContext(AuthContext);
-
+   
 
     const [userData, setUserData] = useState(authContext);
 
 
-    const router = useNavigate();
+    const navigate = useNavigate();
 
     const handleRegister = async (name, username, password) => {
         try {
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
                 username: username,
                 password: password
             })
-
+            navigate("/auth")
 
             if (request.status === httpStatus.CREATED) {
                 return request.data.message;
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
             if (request.status === httpStatus.OK) {
                 localStorage.setItem("token", request.data.token);
-                router("/home")
+                navigate("/home")
             }
         } catch (err) {
             throw err;
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
                 }
             });
             return request.data
-        } catch
+        } catch 
          (err) {
             throw err;
         }
