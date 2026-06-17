@@ -2,10 +2,13 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import httpStatus from "http-status";
+import Meeting from "../models/meeting.model.js";
+
+
 
 const register = async (req, res) => {
     const { name, username, password } = req.body;
-
+    console.log(name)
 
     try {
         const existingUser = await User.findOne({ username });
@@ -22,7 +25,7 @@ const register = async (req, res) => {
         });
 
         await newUser.save();
-
+        console.log(newUser);
         res.status(httpStatus.CREATED).json({ message: "User Registered" })
 
     } catch (e) {
@@ -54,6 +57,7 @@ const login = async (req, res) => {
             user.token = token;
             await user.save();
             return res.status(httpStatus.OK).json({ token: token })
+            useNavigate("/")
         } else {
             return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid Username or password" })
         }
@@ -63,4 +67,39 @@ const login = async (req, res) => {
     }
 }
 
-export { register, login }
+const getUserHistory = async (req, res) => {
+    const { token } = req.query;
+
+    try {
+        const user = await User.findOne({ token: token });
+        const meetings = await Meeting.find({ user_id: user.username })
+        res.json(meetings)
+    } catch (e) {
+        res.json({ message: `Something went wrong ${e}` })
+    }
+}
+
+const addToHistory = async (req, res) => {
+
+    console.log("ADD TO HISTORY CALLED");
+    console.log(req.body);
+    const { token, meeting_code } = req.body;
+
+
+    try {
+        const user = await User.findOne({ token: token });
+
+        const newMeeting = new Meeting({
+            userId: user.username,
+            meetingCode: meeting_code
+        })
+
+        await newMeeting.save();
+
+        res.status(httpStatus.CREATED).json({ message: "Added code to history" })
+    } catch (e) {
+        res.json({ message: `Something went wrong ${e}` })
+    }
+}
+
+export { register, login, getUserHistory, addToHistory }
