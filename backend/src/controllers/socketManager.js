@@ -5,6 +5,7 @@ let connections = {}
 let messages = {}
 let timeOnline = {}
 
+// Socket.io ko server se attach kiya
 export const connectToSocket = (server) => {
     const io = new Server(server, {
         cors: {
@@ -15,7 +16,7 @@ export const connectToSocket = (server) => {
         }
     });
 
-
+// Connection listen karna:
     io.on("connection", (socket) => {
 
         console.log("SOMETHING CONNECTED")
@@ -29,9 +30,9 @@ export const connectToSocket = (server) => {
 
             timeOnline[socket.id] = new Date();
 
-            // connections[path].forEach(elem => {
-            //     io.to(elem)
-            // })
+            connections[path].forEach(elem => {
+                io.to(elem)
+            })
 
             for (let a = 0; a < connections[path].length; a++) {
                 io.to(connections[path][a]).emit("user-joined", socket.id, connections[path])
