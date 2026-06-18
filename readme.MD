@@ -130,7 +130,7 @@ MONGO_URL=your_mongodb_string
 ### Frontend (.env)
 
 ```env
-VITE_SERVER_URL=http://localhost:8000
+VITE_SERVER_URL=https://sync-sphere-backend.onrender.com
 ```
 
 ---
