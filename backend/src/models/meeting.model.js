@@ -8,7 +8,7 @@ const meetingSchema = new Schema({
     meetingCode: {
             type: String,
             required: true,
-        },
+    },
     date:{
         type: Date,
         default: Date.now,
