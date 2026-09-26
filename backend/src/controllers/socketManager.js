@@ -114,7 +114,6 @@ export const connectToSocket = (server) => {
 
 
     })
-
-
+    
     return io;
 }
