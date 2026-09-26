@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import httpStatus from "http-status";
 import Meeting from "../models/meeting.model.js";
 
@@ -52,12 +52,19 @@ const login = async (req, res) => {
         let isPasswordCorrect = await bcrypt.compare(password, user.password)
 
         if (isPasswordCorrect) {
-            let token = crypto.randomBytes(20).toString("hex");
+            const token = jwt.sign(
+                {
+                    userId: user._id.toString(),
+                    username: user.username
+                },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: process.env.JWT_EXPIRES_IN || "7d"
+                }
+            );
 
-            user.token = token;
-            await user.save();
+           
             return res.status(httpStatus.OK).json({ token: token })
-            useNavigate("/")
         } else {
             return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid Username or password" })
         }
@@ -68,11 +75,10 @@ const login = async (req, res) => {
 }
 
 const getUserHistory = async (req, res) => {
-    const { token } = req.query;
+    const username = req.user.username;
 
     try {
-        const user = await User.findOne({ token: token });
-        const meetings = await Meeting.find({ user_id: user.username })
+        const meetings = await Meeting.find({ userId: username });
         res.json(meetings)
     } catch (e) {
         res.json({ message: `Something went wrong ${e}` })
@@ -83,14 +89,15 @@ const addToHistory = async (req, res) => {
 
     console.log("ADD TO HISTORY CALLED");
     console.log(req.body);
-    const { token, meeting_code } = req.body;
+
+    const { meeting_code } = req.body;
+    const username = req.user.username; 
 
 
     try {
-        const user = await User.findOne({ token: token });
-
+        
         const newMeeting = new Meeting({
-            userId: user.username,
+            userId: username,
             meetingCode: meeting_code
         })
 

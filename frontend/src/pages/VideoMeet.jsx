@@ -282,10 +282,20 @@ export default function VideoMeetComponent() {
 
     let connectToSocketServer = () => {
         console.log("ENTERED SOCKET FUNCTION");
-        socketRef.current = io.connect(server_url, { secure: false })
+        socketRef.current = io.connect(server_url, {
+            secure: false,
+            auth: {
+                token: localStorage.getItem("token")
+            }
+        });
+        
         console.log("SOCKET REF", socketRef.current);
 
         socketRef.current.on('signal', gotMessageFromServer)
+
+        socketRef.current.on("connect_error", (err) => {
+            console.log("SOCKET ERROR:", err.message);
+        });
 
         socketRef.current.on('connect', () => {
             console.log("SOCKET CONNECTED");
@@ -300,13 +310,6 @@ export default function VideoMeetComponent() {
                 setVideos((videos) => videos.filter((video) => video.socketId !== id))
             })
 
-            socketRef.current.on("connect_error", (err) => {
-
-                console.log("SOCKET ERROR");
-
-                console.log(err);
-
-            })
 
             socketRef.current.on('user-joined', (id, clients) => {
                 clients.forEach((socketListId) => {
