@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import io from "socket.io-client";
 import { Badge, IconButton, TextField } from '@mui/material';
 import { Button } from '@mui/material';
@@ -140,11 +140,7 @@ export default function VideoMeetComponent() {
         console.log("videoAvailable =", videoAvailable);
         console.log("audioAvailable =", audioAvailable);
         connectToSocketServer();
-
     }
-
-
-
 
     let getUserMediaSuccess = (stream) => {
         try {
@@ -471,108 +467,154 @@ export default function VideoMeetComponent() {
 
 
     return (
-        <div>
+        <div className={styles.meetingApp}>
+            {askForUsername ? (
+                <main className={styles.lobbyPage}>
+                    <header className={styles.lobbyHeader}>
+                        <span className={styles.lobbyBrandMark} aria-hidden="true">A</span>
+                        <span>Apna Video Call</span>
+                    </header>
 
-            {askForUsername === true ?
-
-                <div>
-
-
-                    <h2>Enter into Lobby </h2>
-                    <TextField id="outlined-basic" label="Username" value={username} onChange={e => setUsername(e.target.value)} variant="outlined" />
-                    <Button variant="contained" onClick={connect}>Connect</Button>
-
-
-                    <div>
-                        <video ref={localVideoref} autoPlay muted></video>
-                    </div>
-
-                </div> :
-
-
-                <div className={styles.meetVideoContainer}>
-
-                    {showModal ? <div className={styles.chatRoom}>
-
-                        <div className={styles.chatContainer}>
-                            <h1>Chat</h1>
-
-                            <div className={styles.chattingDisplay}>
-
-                                {messages.length !== 0 ? messages.map((item, index) => {
-
-                                    console.log(messages)
-                                    return (
-                                        <div style={{ marginBottom: "20px" }} key={index}>
-                                            <p style={{ fontWeight: "bold" }}>{item.sender}</p>
-                                            <p>{item.data}</p>
-                                        </div>
-                                    )
-                                }) : <p>No Messages Yet</p>}
-
-
+                    <section className={styles.lobbyLayout}>
+                        <div className={styles.lobbyIntro}>
+                            <p className={styles.lobbyEyebrow}>Before you join</p>
+                            <h1>Get ready for your conversation.</h1>
+                            <p>Choose the name others will see, check your camera, then join when you’re ready.</p>
+                            <div className={styles.lobbyForm}>
+                                <TextField
+                                    className={styles.usernameField}
+                                    id="meeting-username"
+                                    label="Your name"
+                                    value={username}
+                                    onChange={e => setUsername(e.target.value)}
+                                    onKeyDown={e => e.key === "Enter" && username.trim() && connect()}
+                                    variant="outlined"
+                                    fullWidth
+                                />
+                                <Button className={styles.connectButton} variant="contained" disabled={!username.trim()} onClick={connect}>
+                                    Join meeting
+                                </Button>
+                                <p className={styles.lobbyPrivacyNote}>Your camera and microphone settings can be changed during the call.</p>
                             </div>
-
-                            <div className={styles.chattingArea}>
-                                <TextField value={message} onChange={(e) => setMessage(e.target.value)} id="outlined-basic" label="Enter Your chat" variant="outlined" />
-                                <Button variant='contained' onClick={sendMessage}>Send</Button>
-                            </div>
-
-
                         </div>
-                    </div> : <></>}
 
-
-                    <div className={styles.buttonContainers}>
-                        <IconButton onClick={handleVideo} style={{ color: "white" }}>
-                            {(video === true) ? <VideocamIcon /> : <VideocamOffIcon />}
-                        </IconButton>
-                        <IconButton onClick={handleEndCall} style={{ color: "red" }}>
-                            <CallEndIcon />
-                        </IconButton>
-                        <IconButton onClick={handleAudio} style={{ color: "white" }}>
-                            {audio === true ? <MicIcon /> : <MicOffIcon />}
-                        </IconButton>
-
-                        {screenAvailable === true ?
-                            <IconButton onClick={handleScreen} style={{ color: "white" }}>
-                                {screen === true ? <ScreenShareIcon /> : <StopScreenShareIcon />}
-                            </IconButton> : <></>}
-
-                        <Badge badgeContent={newMessages} max={999} color='orange'>
-                            <IconButton onClick={() => setModal(!showModal)} style={{ color: "white" }}>
-                                <ChatIcon />                        </IconButton>
-                        </Badge>
-
-                    </div>
-
-
-                    <video className={styles.meetUserVideo} ref={localVideoref} autoPlay muted></video>
-
-                    <div className={styles.conferenceView}>
-                        {videos.map((video) => (
-                            <div key={video.socketId}>
-                                <video
-
-                                    data-socket={video.socketId}
-                                    ref={ref => {
-                                        if (ref && video.stream) {
-                                            ref.srcObject = video.stream;
-                                        }
-                                    }}
-                                    autoPlay
-                                >
-                                </video>
+                        <div className={styles.lobbyPreview}>
+                            <div className={styles.previewHeader}>
+                                <span className={styles.previewStatus}><span /> Camera preview</span>
+                                <span className={styles.previewName}>{username.trim() || "You"}</span>
                             </div>
+                            <div className={styles.previewVideoWrap}>
+                                <video className={styles.lobbyVideo} ref={localVideoref} autoPlay muted playsInline></video>
+                                <span className={styles.previewCaption}>{username.trim() || "You"}</span>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            ) : (
+                <div className={styles.meetVideoContainer}>
+                    <header className={styles.roomHeader}>
+                        <div className={styles.roomBrand}>
+                            <span className={styles.lobbyBrandMark} aria-hidden="true">A</span>
+                            <div>
+                                <strong>Apna Video Call</strong>
+                                <span>Meeting in progress</span>
+                            </div>
+                        </div>
+                        <div className={styles.roomUser}><span className={styles.roomLiveDot} />{username}</div>
+                    </header>
 
-                        ))}
+                    <div className={styles.roomBody}>
+                        <main className={styles.roomMain}>
+                            <section className={styles.videoStage}>
+                                <div className={styles.conferenceView}>
+                                    <div className={`${styles.videoTile} ${styles.localVideoTile}`}>
+                                        <video ref={localVideoref} autoPlay muted playsInline></video>
+                                        <span>{username} (You)</span>
+                                    </div>
+                                    {videos.map((video) => (
+                                        <div className={styles.videoTile} key={video.socketId}>
+                                            <video
+                                                data-socket={video.socketId}
+                                                ref={ref => {
+                                                    if (ref && video.stream) {
+                                                        ref.srcObject = video.stream;
+                                                    }
+                                                }}
+                                                autoPlay
+                                                playsInline
+                                            />
+                                            <span>Participant</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
 
+                            <div className={styles.buttonContainers}>
+                                <IconButton aria-label={video ? "Turn camera off" : "Turn camera on"} title={video ? "Turn camera off" : "Turn camera on"} onClick={handleVideo} className={!video ? styles.controlDisabled : ""}>
+                                    {video ? <VideocamIcon /> : <VideocamOffIcon />}
+                                </IconButton>
+                                <IconButton aria-label="Leave meeting" title="Leave meeting" onClick={handleEndCall} className={styles.endCallButton}>
+                                    <CallEndIcon />
+                                </IconButton>
+                                <IconButton aria-label={audio ? "Mute microphone" : "Unmute microphone"} title={audio ? "Mute microphone" : "Unmute microphone"} onClick={handleAudio} className={!audio ? styles.controlDisabled : ""}>
+                                    {audio ? <MicIcon /> : <MicOffIcon />}
+                                </IconButton>
+                                {screenAvailable && (
+                                    <IconButton aria-label={screen ? "Stop screen sharing" : "Share screen"} title={screen ? "Stop screen sharing" : "Share screen"} onClick={handleScreen}>
+                                        {screen ? <StopScreenShareIcon /> : <ScreenShareIcon />}
+                                    </IconButton>
+                                )}
+                                <Badge badgeContent={newMessages} max={999} color="primary">
+                                    <IconButton aria-label={showModal ? "Close chat" : "Open chat"} title={showModal ? "Close chat" : "Open chat"} onClick={() => showModal ? closeChat() : openChat()} className={showModal ? styles.controlSelected : ""}>
+                                        <ChatIcon />
+                                    </IconButton>
+                                </Badge>
+                            </div>
+                        </main>
+
+                        {showModal && (
+                            <aside className={styles.chatRoom}>
+                                <div className={styles.chatContainer}>
+                                    <div className={styles.chatHeader}>
+                                        <div>
+                                            <h1>In-call chat</h1>
+                                            <p>Messages in this meeting</p>
+                                        </div>
+                                        <IconButton className={styles.closeChatButton} aria-label="Close chat" onClick={closeChat}>×</IconButton>
+                                    </div>
+                                    <div className={styles.chattingDisplay}>
+                                        {messages.length > 0 ? messages.map((item, index) => (
+                                            <div className={styles.chatMessage} key={index}>
+                                                <p className={styles.chatSender}>{item.sender}</p>
+                                                <p className={styles.chatBubble}>{item.data}</p>
+                                            </div>
+                                        )) : (
+                                            <div className={styles.emptyChat}>
+                                                <ChatIcon />
+                                                <p>No messages yet</p>
+                                                <span>Say hello to get the conversation started.</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className={styles.chattingArea}>
+                                        <TextField
+                                            className={styles.chatInput}
+                                            value={message}
+                                            onChange={e => setMessage(e.target.value)}
+                                            onKeyDown={e => e.key === "Enter" && message.trim() && sendMessage()}
+                                            id="meeting-chat-message"
+                                            label="Write a message"
+                                            variant="outlined"
+                                            size="small"
+                                        />
+                                        <Button variant="contained" disabled={!message.trim()} onClick={sendMessage}>Send</Button>
+                                    </div>
+                                </div>
+                            </aside>
+                        )}
                     </div>
-
                 </div>
-
-            }
-
+            )}
         </div>
     )
 }

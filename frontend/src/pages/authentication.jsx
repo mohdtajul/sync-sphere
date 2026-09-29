@@ -1,25 +1,12 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthContext } from '../contexts/AuthContext';
 import { Snackbar } from '@mui/material';
-
-
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
 
 export default function Authentication() {
 
@@ -42,10 +29,7 @@ export default function Authentication() {
     let handleAuth = async () => {
         try {
             if (formState === 0) {
-
-                let result = await handleLogin(username, password)
-
-
+                await handleLogin(username, password)
             }
             if (formState === 1) {
                 let result = await handleRegister(name, username, password);
@@ -66,109 +50,90 @@ export default function Authentication() {
 
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <Grid
-                container
-                component="main"
-                sx={{
-                height: '100vh',
-                justifyContent: 'center',
-                alignItems: 'center'
-                }}
-            >
-                <CssBaseline />
-               
-                <Grid  xs={12} sm={8} md={5} component={Paper} elevation={6} 
-                    sx={{
-                        width: "500px",
-                        maxWidth: "90%"
-                    }} 
-                >
-                    <Box
-                        sx={{
-                            my: 8,
-                            mx: 4,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
+        <div className="authPage">
+            <section className="authAside">
+                <div className="authBrand">
+                    <span className="authBrandMark" aria-hidden="true">A</span>
+                    <span>Apna Video Call</span>
+                </div>
+                <div className="authAsideCopy">
+                    <p className="authEyebrow">A little closer, wherever you are</p>
+                    <h1>Make room for good conversations.</h1>
+                    <p>Sign in or create an account to meet face to face, wherever life takes you.</p>
+                </div>
+                <img className="authArtwork" src="/mobile.png" alt="Apna Video Call on a phone" />
+                <span className="authAsideFooter">Simple, personal video calls.</span>
+            </section>
 
+            <main className="authMain">
+                <Paper className="authCard" elevation={0}>
+                    <div className="authCardIcon"><LockOutlinedIcon /></div>
+                    <Typography component="p" className="authFormEyebrow">WELCOME</Typography>
+                    <Typography component="h2" className="authTitle">
+                        {formState === 0 ? "Welcome back" : "Create your account"}
+                    </Typography>
+                    <Typography component="p" className="authSubtitle">
+                        {formState === 0 ? "Sign in to continue to your meetings." : "A few details and you’ll be ready to connect."}
+                    </Typography>
 
-                        <div>
-                            <Button variant={formState === 0 ? "contained" : ""} onClick={() => { setFormState(0) }}>
-                                Sign In
-                            </Button>
-                            <Button variant={formState === 1 ? "contained" : ""} onClick={() => { setFormState(1) }}>
-                                Sign Up
-                            </Button>
-                        </div>
+                    <div className="authTabs" role="tablist" aria-label="Account access">
+                        <Button role="tab" aria-selected={formState === 0} className={formState === 0 ? "authTab authTabActive" : "authTab"} onClick={() => { setFormState(0); setError("") }}>
+                            Sign in
+                        </Button>
+                        <Button role="tab" aria-selected={formState === 1} className={formState === 1 ? "authTab authTabActive" : "authTab"} onClick={() => { setFormState(1); setError("") }}>
+                            Sign up
+                        </Button>
+                    </div>
 
-                        <Box component="form" noValidate sx={{ mt: 1 }}>
-                            {formState === 1 ? <TextField
-                                margin="normal"
+                    <Box component="form" className="authForm" noValidate onSubmit={e => { e.preventDefault(); handleAuth() }}>
+                        {formState === 1 && (
+                            <TextField
+                                className="authField"
                                 required
                                 fullWidth
-                                id="username"
-                                label="Full Name"
-                                name="username"
+                                id="full-name"
+                                label="Full name"
+                                name="name"
                                 value={name}
-                                autoFocus
-                                onChange={(e) => setName(e.target.value)}
-                            /> : <></>}
-
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                name="username"
-                                value={username}
-                                autoFocus
-                                onChange={(e) => setUsername(e.target.value)}
-
+                                autoComplete="name"
+                                onChange={e => setName(e.target.value)}
                             />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                value={password}
-                                type="password"
-                                onChange={(e) => setPassword(e.target.value)}
+                        )}
+                        <TextField
+                            className="authField"
+                            required
+                            fullWidth
+                            id="username"
+                            label="Username"
+                            name="username"
+                            value={username}
+                            autoComplete="username"
+                            autoFocus={formState === 0}
+                            onChange={e => setUsername(e.target.value)}
+                        />
+                        <TextField
+                            className="authField"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            value={password}
+                            type="password"
+                            autoComplete={formState === 0 ? "current-password" : "new-password"}
+                            onChange={e => setPassword(e.target.value)}
+                            id="password"
+                        />
 
-                                id="password"
-                            />
+                        {error && <Typography className="authError" role="alert">{error}</Typography>}
 
-                            <p style={{ color: "red" }}>{error}</p>
-
-                            <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                                onClick={handleAuth}
-                            >
-                                {formState === 0 ? "Login " : "Register"}
-                            </Button>
-
-                        </Box>
+                        <Button className="authSubmit" type="submit" fullWidth variant="contained" disabled={!username.trim() || !password || (formState === 1 && !name.trim())}>
+                            {formState === 0 ? "Sign in" : "Create account"}
+                        </Button>
                     </Box>
-                </Grid>
-            </Grid>
+                </Paper>
+            </main>
 
-            <Snackbar
-
-                open={open}
-                autoHideDuration={4000}
-                message={message}
-            />
-
-        </ThemeProvider>
+            <Snackbar open={open} autoHideDuration={4000} message={message} onClose={() => setOpen(false)} />
+        </div>
     );
 }
