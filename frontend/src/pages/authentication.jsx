@@ -59,8 +59,7 @@ export default function Authentication() {
             }
         } catch (err) {
 
-            console.log(err);
-            let message = (err.response.data.message);
+            const message = err.response?.data?.message || "Backend se connection nahi ho pa raha. Thodi der baad dobara try karein.";
             setError(message);
         }
     }
