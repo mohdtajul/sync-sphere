@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import withAuth from '../utils/withAuth'
 import { useNavigate } from 'react-router-dom'
 import "../App.css";
-import { Button, IconButton, TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import RestoreIcon from '@mui/icons-material/Restore';
 import { AuthContext } from '../contexts/AuthContext';
 
@@ -21,25 +21,16 @@ function HomeComponent() {
     }
 
     return (
-        <>
-
-            <div className="navBar">
-
-                <div style={{ display: "flex", alignItems: "center" }}>
-
+        <div className="homePage">
+            <header className="navBar homeNavBar">
+                <div className="homeBrand">
+                    <span className="homeBrandMark" aria-hidden="true">A</span>
                     <h2>Apna Video Call</h2>
                 </div>
-
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <IconButton onClick={
-                        () => {
-                            navigate("/history")
-                        }
-                    }>
-                        <RestoreIcon />
-                    </IconButton>
-                    <p>History</p>
-
+                <div className="homeNavActions">
+                    <Button className="historyButton" startIcon={<RestoreIcon />} onClick={() => navigate("/history")}>
+                        History
+                    </Button>
                     <Button onClick={() => {
                         localStorage.removeItem("token")
                         navigate("/auth")
@@ -47,29 +38,43 @@ function HomeComponent() {
                         Logout
                     </Button>
                 </div>
+            </header>
 
+            <main className="meetContainer homeMain">
+                <section className="leftPanel homeIntro">
+                    <div className="homeIntroContent">
+                        <p className="homeEyebrow">A simple space to connect</p>
+                        <h1>Good conversations start here.</h1>
+                        <p className="homeDescription">
+                            Join a video call with your class, your team, or anyone you want to catch up with.
+                        </p>
 
-            </div>
-
-
-            <div className="meetContainer">
-                <div className="leftPanel">
-                    <div>
-                        <h2>Providing Quality Video Call Just Like Quality Education</h2>
-
-                        <div style={{ display: 'flex', gap: "10px" }}>
-
-                            <TextField onChange={e => setMeetingCode(e.target.value)} id="outlined-basic" label="Meeting Code" variant="outlined" />
-                            <Button onClick={handleJoinVideoCall} variant='contained'>Join</Button>
-
+                        <div className="meetingForm">
+                            <TextField
+                                className="meetingCodeField"
+                                onChange={e => setMeetingCode(e.target.value)}
+                                value={meetingCode}
+                                label="Meeting code"
+                                variant="outlined"
+                                onKeyDown={e => e.key === "Enter" && meetingCode.trim() && handleJoinVideoCall()}
+                            />
+                            <Button
+                                className="joinButton"
+                                onClick={handleJoinVideoCall}
+                                disabled={!meetingCode.trim()}
+                                variant="contained"
+                            >
+                                Join meeting
+                            </Button>
                         </div>
+                        <p className="homeHint">Enter a code to join an existing meeting.</p>
                     </div>
+                </section>
+                <div className="rightPanel homeIllustration">
+                    <img src="/rightpanel.png" alt="People connecting on a video call" />
                 </div>
-                <div className='rightPanel'>
-                    <img srcSet='/rightpanel.png' alt="" />
-                </div>
-            </div>
-        </>
+            </main>
+        </div>
     )
 }
 

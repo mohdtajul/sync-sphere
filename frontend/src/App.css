@@ -100,3 +100,227 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 }
+
+.homePage {
+  height: 100vh;
+  overflow-y: auto;
+  background: #f7f8fa;
+  color: #202733;
+}
+
+.homeNavBar {
+  min-height: 76px;
+  padding: 0 7.5%;
+  background: #fff;
+  border-bottom: 1px solid #e8ebef;
+}
+
+.homeBrand,
+.homeNavActions {
+  display: flex;
+  align-items: center;
+}
+
+.homeBrand {
+  gap: 12px;
+}
+
+.homeBrandMark {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 11px;
+  background: #e9f0ff;
+  color: #315ca8;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.homeBrand h2 {
+  color: #202733;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.homeNavActions {
+  gap: 8px;
+}
+
+.homeNavActions .MuiButton-root {
+  min-width: 0;
+  border-radius: 8px;
+  color: #485465;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.homeNavActions .historyButton {
+  padding: 8px 12px;
+}
+
+.homeMain {
+  min-height: calc(100vh - 76px);
+  height: auto;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 56px 6%;
+  align-items: center;
+  gap: 5%;
+}
+
+.homeIntro {
+  flex: 1 1 52%;
+  height: auto;
+  min-width: 0;
+}
+
+.homeIntroContent {
+  width: 100%;
+  max-width: 550px;
+}
+
+.homeEyebrow {
+  margin-bottom: 18px;
+  color: #5676ad;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.homeIntro h1 {
+  max-width: 520px;
+  color: #202733;
+  font-size: clamp(2.4rem, 4.4vw, 3.6rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+}
+
+.homeDescription {
+  max-width: 470px;
+  margin-top: 20px;
+  color: #687384;
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.meetingForm {
+  display: flex;
+  max-width: 520px;
+  margin-top: 34px;
+  padding: 8px;
+  gap: 10px;
+  border: 1px solid #e5e8ed;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(34 48 69 / 6%);
+}
+
+.meetingCodeField {
+  flex: 1;
+}
+
+.meetingCodeField .MuiOutlinedInput-root {
+  border-radius: 8px;
+}
+
+.joinButton.MuiButton-root {
+  min-width: 142px;
+  border-radius: 8px;
+  background: #315ca8;
+  box-shadow: none;
+  text-transform: none;
+  font-weight: 600;
+}
+
+.joinButton.MuiButton-root:hover {
+  background: #274d91;
+  box-shadow: none;
+}
+
+.homeHint {
+  margin: 12px 0 0 4px;
+  color: #87909d;
+  font-size: 0.88rem;
+}
+
+.homeIllustration {
+  flex: 1 1 43%;
+  min-width: 0;
+  justify-content: center;
+}
+
+.homeIllustration img {
+  display: block;
+  width: min(100%, 460px);
+  height: auto;
+  border-radius: 18px;
+}
+
+@media (max-width: 760px) {
+  .homeNavBar {
+    min-height: 68px;
+    padding: 0 5%;
+  }
+
+  .homeBrand h2 {
+    font-size: 1rem;
+  }
+
+  .homeMain {
+    min-height: calc(100vh - 68px);
+    flex-direction: column;
+    padding: 48px 7% 32px;
+    gap: 30px;
+  }
+
+  .homeIntroContent {
+    margin: 0 auto;
+  }
+
+  .homeIntro h1 {
+    font-size: clamp(2.2rem, 9vw, 3rem);
+  }
+
+  .homeIllustration img {
+    width: min(78vw, 340px);
+  }
+}
+
+@media (max-width: 480px) {
+  .homeNavBar {
+    padding: 0 4%;
+  }
+
+  .homeBrand {
+    gap: 8px;
+  }
+
+  .homeBrandMark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .homeNavActions {
+    gap: 0;
+  }
+
+  .homeNavActions .MuiButton-root {
+    padding: 6px 8px;
+    font-size: 0.82rem;
+  }
+
+  .homeNavActions .historyButton .MuiButton-startIcon {
+    margin-right: 4px;
+  }
+
+  .meetingForm {
+    flex-direction: column;
+  }
+
+  .joinButton.MuiButton-root {
+    min-height: 46px;
+  }
+}
