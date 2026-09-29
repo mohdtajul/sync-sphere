@@ -94,3 +94,9 @@
   height: auto;
   border-radius: 20px;
 }
+
+.historyPage {
+  height: 100vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}

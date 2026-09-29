@@ -1,9 +1,11 @@
 import { Server } from "socket.io"
-
+import jwt from "jsonwebtoken";
 
 let connections = {}
 let messages = {}
 let timeOnline = {}
+
+
 
 // Socket.io ko server se attach kiya
 export const connectToSocket = (server) => {
@@ -16,6 +18,23 @@ export const connectToSocket = (server) => {
         }
     });
 
+    io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    if (!token) {
+        return next(new Error("Authentication token is missing"));
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        socket.user = decoded;
+
+        next();
+    } catch (error) {
+        return next(new Error("Token is invalid or expired"));
+    }
+    
+});
 // Connection listen karna:
     io.on("connection", (socket) => {
 
@@ -114,6 +133,6 @@ export const connectToSocket = (server) => {
 
 
     })
-    
+
     return io;
 }
